@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Line Chart</title>
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+  <body>
+    <header>
+    <p class="logo">Internet of Medical Things</p>
+    <nav>
+      <ul class = "nav__links">
+            <a style="margin-right: 15px" class="cta" href="#"><button>Start Calculate</button></a>
+            <a class="cta" href="#"><button>Connectivity</button></a>
+      </ul>
+    </nav>
+    </header>
+    <div class="container">
+        <div class="white-blank">
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <div class="disp-cont">
+            <div class="live">Live Data</div>
+            <div class="data-cont">
+                <a class="cta" href="#">
+                    <button class="box1">
+                        <div class="heart-symbol">&#x2764;</div>
+                        <span id="bpm-value">87</span> <span class="unit">bpm</span>
+                    </button>
+                </a>
+                <a class="cta" href="#">
+                    <button class="box2">
+                        <div class="heart-symbol">SPO2</div>
+                        <span id="spo2-value">97</span> <span class="unit">percent</span>
+                    </button>
+                </a>
+                <a class="cta" href="#">
+                    <button class="box3">
+                        <div class="heart-symbol">&#x263c;</div>
+                        <span id="temp-value">34</span> <span class="unit">&deg;C</span>
+                    </button>
+                </a>
+            </div>
+
+            <canvas id="ppgChart" width="800px" height="300"></canvas>
+            <canvas id="ppgDoughnutChart" width="400" height="400"></canvas>
+            <canvas id="ppgChartPPG" width="800px" height="300"></canvas>
+            <script src="script.js"></script>
+        </div>
+        <div class="ai-blank">
+            <p>SOME DATA ANALYSIS AND PREDICTION</p>
+        </div>
+    </div>
+</body>
+</html>
