@@ -18,15 +18,33 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include <string.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 //RNG_HandleTypeDef hrng;
+#define MAX_DATA_LENGTH 2
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+typedef struct {
+    uint8_t command;
+    uint8_t dataLength;
+    uint8_t data[MAX_DATA_LENGTH];
+} DESIoT_dataPacket_t;
 
+typedef struct {
+    uint8_t h1;
+    uint8_t h2;
+    DESIoT_dataPacket_t dataPacket;
+    uint8_t t1;
+    uint8_t t2;
+    union {
+        uint16_t crc;
+        uint8_t crcArr[2];
+    };
+} __attribute__((__packed__)) DESIoT_Frame_t;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -43,7 +61,8 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint8_t crcResponse = 'y';
+volatile uint8_t crcResponse = 0;
+DESIoT_Frame_t frame;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,7 +77,9 @@ uint16_t CalculateCRC(uint8_t *data, uint16_t length);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	HAL_UART_Receive_IT(&huart2, &crcResponse, 1);
+	if (huart->Instance == USART2){
+		HAL_UART_Receive_IT(&huart2, (uint8_t *)&crcResponse, 1);
+	}
 }
 /* USER CODE END 0 */
 
@@ -92,12 +113,17 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  int randomSensor = 123;
-  uint16_t crc;
+  uint16_t sensorData1 = 123;
+  frame.h1 = 0xAA;
+  frame.h2 = 0xBB;
+  frame.dataPacket.command = 0x01; // Example command
+  frame.dataPacket.dataLength = 2; // Length of sensor data
+  //frame.dataPacket.data[1] = sensorData2;
+  frame.t1 = 0xCC;
+  frame.t2 = 0xDD;
   char buffer[10];
   char sendBuffer[20];
-  uint32_t startTime = HAL_GetTick();
-  HAL_UART_Receive_IT(&huart2, &crcResponse, 1);
+  HAL_UART_Receive_IT(&huart2, (uint8_t *)&crcResponse, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,11 +133,18 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  sprintf(buffer, "%d", randomSensor); // Convert integer to string
-	  crc = CalculateCRC((uint8_t*)buffer, strlen(buffer)); // Calculate CRC for the string
-	  sprintf(sendBuffer, "%s%04X\n", buffer, crc); // Combine data and CRC into a single string
+	  frame.dataPacket.data[0] = sensorData1 & 0xff;
+	  frame.dataPacket.data[1] = (sensorData1  >> 8)& 0xff;
+	  frame.crc = CalculateCRC((uint8_t *)&frame, sizeof(frame) - sizeof(frame.crc));
+	  //sprintf(buffer, "%d", randomSensor); // Convert integer to string
+	  //crc = CalculateCRC((uint8_t*)buffer, strlen(buffer)); // Calculate CRC for the string
+	  //sprintf(sendBuffer, "%s%04X\n", buffer, crc); // Combine data and CRC into a single string
 
-	  HAL_UART_Transmit(&huart2, (uint8_t *)sendBuffer, strlen(sendBuffer), HAL_MAX_DELAY); // Send data with CRC over UART
+	  //HAL_UART_Transmit(&huart2, (uint8_t *)sendBuffer, strlen(sendBuffer), HAL_MAX_DELAY);
+	  // Send data with CRC over UART
+	  HAL_UART_Transmit(&huart2, (uint8_t *)&frame, sizeof(frame), HAL_MAX_DELAY);
+	  uint32_t startTime = HAL_GetTick();
+
 	  while (1) {
 		  // Nhận một ký tự từ ESP32
 		  if (crcResponse == 'Y') { // Nếu nhận được tín hiệu 'Y' từ ESP32
@@ -124,7 +157,7 @@ int main(void)
 		  }
 	  } // Wait until receiving 'Y' (CRC check passed) from ESP32
 	  HAL_Delay(1000); // Wait for 1 second before sending again
-	  randomSensor++;
+	  sensorData1++;
   }
   /* USER CODE END 3 */
 }
