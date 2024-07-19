@@ -1,3 +1,7 @@
-*Phase 1 - Getting Started*
+# AIoT for Remote Healthcare System
 
-**System Desgin**
+##Phase 1 - Getting Started*
+- **Literature Overview**
+- **System Design**
+- **Firebas reseacrh**
+  
