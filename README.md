@@ -13,7 +13,7 @@ $ node_modules/.bin/webpack
 ```
 2. Start server
 ```bash
-$ serve - n dist/
+$ serve -n dist/
 ```
 
 
