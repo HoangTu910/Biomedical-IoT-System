@@ -8,9 +8,13 @@
 ### Firebase server setup
 
 1. Build webpack
-    ```bash
-    node_modules/.bin/webpack
-    ```
+```bash
+$ node_modules/.bin/webpack
+```
+2. Start server
+```bash
+$ serve - n dist/
+```
 
 
 
