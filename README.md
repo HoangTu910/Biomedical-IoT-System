@@ -18,12 +18,20 @@ $ serve -n dist/
 
 ### Frontend setup (React + Vite + Tailwind)
 Modify only App.jsx and pages folder when working with frontend
+1. Install dependencies
+```bash
+$ npm i name_package
+```
+2. Build Frontend
+```bash
+$ npm run dev
+```
 
-**App.jsx**: 
+**App.jsx Configuration**: 
 * Add path by using path="/path_name" and element={<element_name/>}></Route>
 * Everytime want to create a new path (API) just add another <Route> inside <Routes>
 
-**pages**:
+**Pages Folder**:
 * element_name in App.jsx depend on .jsx file in pages
 * If want to add new path, create new .jsx file and config html like login.jsx
 * If copy a template on Tailwind rememeber to rename the *function* and *export default* 
