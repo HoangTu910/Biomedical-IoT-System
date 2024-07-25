@@ -40,7 +40,7 @@ $ npm run dev
 * Synchronize user Id and device ID in Database.
 * Old data of user? Queue [200] - Database update() or set()?
 * Doctor feature.
-
+* Developer or User.
 
 
   
