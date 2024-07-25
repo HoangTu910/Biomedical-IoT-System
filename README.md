@@ -36,6 +36,10 @@ $ npm run dev
 * If want to add new path, create new .jsx file and config html like login.jsx
 * If copy a template on Tailwind rememeber to rename the *function* and *export default* 
 
+**Query?**:
+* Synchronize user Id and device ID in Database.
+* Old data of user? Queue [200] - Database update() or set()?
+* Doctor feature.
 
 
 
